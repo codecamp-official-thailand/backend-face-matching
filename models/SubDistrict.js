@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   SubDistrict.associate = (models) => {
     SubDistrict.belongsTo(models.District, { foreignKey: "district_id" });
     SubDistrict.hasMany(models.Hospital, { foreignKey: "sub_district_id" });
+    SubDistrict.hasMany(models.Maker, { foreignKey: "sub_district_id" });
   };
 
   return SubDistrict;
