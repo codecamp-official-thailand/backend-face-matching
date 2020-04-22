@@ -9,11 +9,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       tableName: "regions",
+      timestamps: false,
     }
   );
 
   Region.associate = (models) => {
-    Region.hasMany(models.Province, { foreignKey: "region_id" });
     Region.hasMany(models.Maker, { foreignKey: "region_id" });
   };
 

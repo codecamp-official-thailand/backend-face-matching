@@ -4,18 +4,21 @@ module.exports = (sequelize, DataTypes) => {
     {
       province: {
         type: DataTypes.STRING,
-        unique: true,
       },
     },
     {
       tableName: "provinces",
+      timestamps: false,
     }
   );
 
   Province.associate = (models) => {
-    Province.belongsTo(models.Region, { foreignKey: "region_id" });
-    Province.hasMany(models.District, { foreignKey: "province_id" });
-    Province.hasMany(models.Maker, { foreignKey: "province_id" });
+    Province.belongsTo(models.Region, {
+      foreignKey: "region_id",
+    });
+    Province.hasMany(models.ProvinceDistrictSubdistrict, {
+      foreignKey: "province_id",
+    });
   };
 
   return Province;

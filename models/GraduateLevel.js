@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       tableName: "graduate_level",
+      timestamps: false,
     }
   );
 

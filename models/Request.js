@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
       delivered_amount: {
         type: DataTypes.INTEGER,
       },
+      isUrgent: {
+        type: DataTypes.BOOLEAN,
+      },
     },
     {
       tableName: "requests",

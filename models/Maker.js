@@ -17,6 +17,13 @@ module.exports = (sequelize, DataTypes) => {
       phone_no: {
         type: DataTypes.STRING(10),
       },
+      username: {
+        type: DataTypes.STRING(100),
+        unique: true,
+      },
+      password: {
+        type: DataTypes.STRING,
+      },
     },
     {
       tableName: "makers",
@@ -31,10 +38,9 @@ module.exports = (sequelize, DataTypes) => {
     Maker.belongsTo(models.School, { foreignKey: "school_id" });
     Maker.belongsTo(models.GraduateLevel, { foreignKey: "graduate_level_id" });
     Maker.belongsTo(models.CareerType, { foreignKey: "career_type_id" });
-    Maker.belongsTo(models.District, { foreignKey: "district_id" });
-    Maker.belongsTo(models.Province, { foreignKey: "province_id" });
-    Maker.belongsTo(models.Region, { foreignKey: "region_id" });
-    Maker.belongsTo(models.SubDistrict, { foreignKey: "sub_district_id" });
+    Maker.belongsTo(models.ProvinceDistrictSubdistrict, {
+      foreignKey: "pds_id",
+    });
   };
 
   return Maker;
