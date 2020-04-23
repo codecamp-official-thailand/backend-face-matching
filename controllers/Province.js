@@ -1,13 +1,18 @@
 const db = require("../models");
 
-const getAllProvincesByRegionId = async (req, res) => {
-  const regionId = req.query.region_id;
+const getAllProvinces = async (req, res) => {
+  const regionId = req.body.region_id;
+  let provinces;
 
-  const provinces = await db.Province.findAll({
-    where: { region_id: regionId },
-  });
+  if (regionId) {
+    provinces = await db.Province.findAll({
+      where: { region_id: regionId },
+    });
+  } else {
+    provinces = await db.Province.findAll();
+  }
 
   res.status(200).send(provinces);
 };
 
-module.exports = { getAllProvincesByRegionId };
+module.exports = { getAllProvinces };

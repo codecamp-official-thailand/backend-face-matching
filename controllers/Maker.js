@@ -11,6 +11,8 @@ const registerMaker = async (req, res) => {
     nick_name,
     password,
     phone_no,
+    pds_id,
+    region_id,
   } = req.body;
 
   const user = await db.Maker.findOne({ where: { username: email } });
@@ -30,10 +32,13 @@ const registerMaker = async (req, res) => {
         nick_name: nick_name,
         line_id: line_id,
         phone_no: phone_no,
+        pds_id,
+        region_id,
       });
 
       res.status(201).send({ message: "User created." });
-    } catch {
+    } catch (ex) {
+      console.log(ex);
       res.status(500).send();
     }
   }

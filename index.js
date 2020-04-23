@@ -1,4 +1,5 @@
 require("dotenv").config();
+require("./config/passport/passport");
 
 const express = require("express");
 const db = require("./models");
@@ -13,6 +14,7 @@ const hospitalRoutes = require("./routes/Hospital");
 const departmentRoutes = require("./routes/Department");
 const requestRoutes = require("./routes/Request");
 const makerRoutes = require("./routes/Maker");
+const reserveRoutes = require("./routes/Reserve");
 
 app.use(cors());
 app.use(express.json());
@@ -26,6 +28,7 @@ app.use("/hospitals", hospitalRoutes);
 app.use("/departments", departmentRoutes);
 app.use("/requests", requestRoutes);
 app.use("/makers", makerRoutes);
+app.use("/reserves", reserveRoutes);
 
 db.sequelize.sync({ alter: false }).then(() => {
   app.listen(process.env.PORT, () => {

@@ -6,6 +6,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         unique: true,
       },
+      isAccept: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       tableName: "hospitals",
