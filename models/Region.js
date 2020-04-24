@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Region.associate = (models) => {
     Region.hasMany(models.Maker, { foreignKey: "region_id" });
+    Region.hasMany(models.Request, { foreignKey: "region_id" });
   };
 
   return Region;

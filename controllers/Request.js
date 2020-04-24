@@ -1,4 +1,5 @@
 const db = require("../models");
+const { Op } = require("sequelize");
 
 const createNewRequest = async (req, res) => {
   console.log(req.body);
@@ -66,25 +67,57 @@ const createNewRequest = async (req, res) => {
 };
 
 const getAllRequest = async (req, res) => {
-  const hospitalId = Number(req.query.hosiptalId);
+  const hospitalId = Number(req.query.hospital_id);
   const pageSize = Number(req.query.page_size);
   const page = Number(req.query.page);
+  const isUrgent = Boolean(req.query.urgent);
+  const regionId = Number(req.query.region_id);
 
   if (hospitalId) {
-    const requests = await db.Request.findAll({
+    let staffIds = await db.MedicalStaff.findAll({
       where: { hospital_id: hospitalId },
+      attributes: ["id"],
+    });
+
+    staffIds = staffIds.map((element) => element.id);
+
+    const requests = await db.Request.findAll({
+      where: { medical_staff_id: { [Op.in]: staffIds } },
+      include: { model: db.MedicalStaff, include: [db.Department] },
     });
 
     res.status(200).send(requests);
-  } else {
+  } else if (pageSize && page) {
     const offset = page - 1;
-
-    const { count, rows } = await db.Request.findAndCountAll({
+    let query = {
       limit: pageSize,
       offset: offset,
-    });
+      include: {
+        model: db.MedicalStaff,
+        include: [
+          { model: db.Hospital, include: [db.ProvinceDistrictSubdistrict] },
+          db.Department,
+        ],
+      },
+    };
 
-    res.status(200).send(rows);
+    if (isUrgent || regionId) {
+      query["where"] = {};
+    }
+
+    if (isUrgent) {
+      query["where"].isUrgent = true;
+    }
+
+    if (regionId) {
+      query["where"].region_id = regionId;
+    }
+
+    const { count, rows } = await db.Request.findAndCountAll(query);
+
+    res.status(200).send({ totalRequests: count, requests: rows });
+  } else {
+    res.status(400).send();
   }
 };
 

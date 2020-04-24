@@ -1,6 +1,6 @@
 const db = require("../models");
 
-const getHospitalById = async (req, res) => {
+const getHospitalByPdsId = async (req, res) => {
   const pds_id = req.query.pds_id;
 
   const hospital = await db.Hospital.findAll({
@@ -10,4 +10,14 @@ const getHospitalById = async (req, res) => {
   res.status(200).send(hospital);
 };
 
-module.exports = { getHospitalById };
+const getHospitalById = async (req, res) => {
+  const hospitalId = Number(req.params.id);
+
+  const targetHospital = await db.Hospital.findOne({
+    where: { id: hospitalId },
+  });
+
+  res.status(200).send(targetHospital);
+};
+
+module.exports = { getHospitalById, getHospitalByPdsId };

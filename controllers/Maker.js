@@ -2,6 +2,10 @@ const db = require("../models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+const checkToken = async (req, res) => {
+  res.status(200).send();
+};
+
 const registerMaker = async (req, res) => {
   const {
     email,
@@ -63,8 +67,11 @@ const loginMaker = async (req, res) => {
       id: user.id,
       firstname: user.firstname,
       lastname: user.lastname,
+      region_id: user.region_id,
     };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 60 });
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: 3600,
+    });
 
     res.status(200).send({ message: "User found & Logged In", token });
   } else {
@@ -72,4 +79,4 @@ const loginMaker = async (req, res) => {
   }
 };
 
-module.exports = { registerMaker, loginMaker };
+module.exports = { registerMaker, loginMaker, checkToken };

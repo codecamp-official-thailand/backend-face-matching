@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Request.associate = (models) => {
     Request.belongsTo(models.MedicalStaff, { foreignKey: "medical_staff_id" });
+    Request.belongsTo(models.Region, { foreignKey: "region_id" });
     Request.belongsToMany(models.Maker, {
       through: { model: models.Reserve, unique: false },
       foreignKey: "request_id",
