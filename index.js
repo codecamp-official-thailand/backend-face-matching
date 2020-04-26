@@ -15,6 +15,7 @@ const departmentRoutes = require("./routes/Department");
 const requestRoutes = require("./routes/Request");
 const makerRoutes = require("./routes/Maker");
 const reserveRoutes = require("./routes/Reserve");
+const dashboardRoutes = require("./routes/Dashboard");
 
 app.use(cors());
 app.use(express.json());
@@ -29,6 +30,7 @@ app.use("/departments", departmentRoutes);
 app.use("/requests", requestRoutes);
 app.use("/makers", makerRoutes);
 app.use("/reserves", reserveRoutes);
+app.use("/dashboards", dashboardRoutes);
 
 db.sequelize.sync({ alter: false }).then(() => {
   app.listen(process.env.PORT, () => {

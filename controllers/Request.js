@@ -2,7 +2,7 @@ const db = require("../models");
 const { Op } = require("sequelize");
 
 const createNewRequest = async (req, res) => {
-  console.log(req.body);
+  const provinceId = Number(req.body.province_id);
   const subDistrictId = Number(req.body.sub_district_id);
   const requestAmount = Number(req.body.amount);
   const requestName = req.body.name;
@@ -55,12 +55,20 @@ const createNewRequest = async (req, res) => {
     hospital_id: hospitalId,
   });
 
+  const targetRegion = await db.Province.findOne({
+    where: { id: provinceId },
+    attributes: ["region_id"],
+  });
+
+  console.log(targetRegion);
+
   const newRequest = await db.Request.create({
     request_amount: requestAmount,
     reserve_amount: 0,
     delivered_amount: 0,
     isUrgent: false,
     medical_staff_id: newMagicalStaff.id,
+    region_id: targetRegion.region_id,
   });
 
   res.status(201).send(newRequest);
@@ -100,10 +108,7 @@ const getAllRequest = async (req, res) => {
         ],
       },
     };
-
-    if (isUrgent || regionId) {
-      query["where"] = {};
-    }
+    query["where"] = { request_amount: { [Op.gt]: 0 } };
 
     if (isUrgent) {
       query["where"].isUrgent = true;
@@ -121,4 +126,15 @@ const getAllRequest = async (req, res) => {
   }
 };
 
-module.exports = { createNewRequest, getAllRequest };
+const getRequestById = async (req, res) => {
+  const requestId = req.params.id;
+
+  const targetRequest = await db.Request.findOne({
+    where: { id: requestId },
+    include: { model: db.MedicalStaff, include: [db.Department, db.Hospital] },
+  });
+
+  res.status(200).send(targetRequest);
+};
+
+module.exports = { createNewRequest, getAllRequest, getRequestById };
