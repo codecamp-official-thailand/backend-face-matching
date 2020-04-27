@@ -4,7 +4,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       hospital: {
         type: DataTypes.STRING,
-        unique: true,
       },
       isAccept: {
         type: DataTypes.BOOLEAN,
