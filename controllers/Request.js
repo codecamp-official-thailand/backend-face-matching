@@ -31,21 +31,14 @@ const createNewRequest = async (req, res) => {
 
   if (hospitalId === -1) {
     const hospitalName = req.body.hospital_name;
-    const targetHospital = await db.Hospital.findOne({
-      where: { hospital: hospitalName },
+
+    const newHospital = await db.Hospital.create({
+      hospital: hospitalName,
+      pds_id: subDistrictId,
+      isAccept: false,
     });
 
-    if (targetHospital) {
-      hospitalId = Number(targetHospital.id);
-    } else {
-      const newHospital = await db.Hospital.create({
-        hospital: hospitalName,
-        pds_id: subDistrictId,
-        isAccept: false,
-      });
-
-      hospitalId = Number(newHospital.id);
-    }
+    hospitalId = Number(newHospital.id);
   }
 
   const newMagicalStaff = await db.MedicalStaff.create({
