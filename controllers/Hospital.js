@@ -20,4 +20,34 @@ const getHospitalById = async (req, res) => {
   res.status(200).send(targetHospital);
 };
 
-module.exports = { getHospitalById, getHospitalByPdsId };
+const getHospitalNonAccept = async (req, res) => {
+  const target = Boolean(Number(req.params.id));
+  const result = await db.Hospital.findAll({
+    where: { isAccept: target },
+    include: [db.MedicalStaff],
+  });
+
+  res.status(200).send(result);
+};
+
+const updateHospital = async (req, res) => {
+  await db.Hospital.update(
+    { hospital: req.body.hospital, isAccept: true },
+    { where: { id: Number(req.query.id) } }
+  );
+
+  res.status(200).send();
+};
+
+const deleteHospital = async (req, res) => {
+  await db.Hospital.destroy({ where: { id: req.query.id } });
+  res.status(200).send();
+};
+
+module.exports = {
+  getHospitalById,
+  getHospitalByPdsId,
+  getHospitalNonAccept,
+  updateHospital,
+  deleteHospital,
+};

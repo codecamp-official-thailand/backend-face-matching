@@ -89,7 +89,7 @@ const getAllRequest = async (req, res) => {
 
     res.status(200).send(requests);
   } else if (pageSize && page) {
-    const offset = page - 1;
+    const offset = (page - 1) * pageSize;
     let query = {
       limit: pageSize,
       offset: offset,
@@ -130,4 +130,47 @@ const getRequestById = async (req, res) => {
   res.status(200).send(targetRequest);
 };
 
-module.exports = { createNewRequest, getAllRequest, getRequestById };
+const getRequestAndPhone = async (req, res) => {
+  const region = req.query.region;
+  const query = {
+    include: [
+      {
+        model: db.MedicalStaff,
+        attributes: ["hospital_id"],
+        include: [{ model: db.Hospital, attributes: ["hospital"] }],
+      },
+    ],
+  };
+  if (region) {
+    query["where"] = { region_id: region };
+  }
+
+  const result = await db.Request.findAll(query);
+
+  res.status(200).send(result);
+};
+
+const updatePatchRequest = async (req, res) => {
+  const query = {};
+  const checkUrgent = Boolean(Number(req.query.urgent));
+  const newRequestAmount = Number(req.query.request_amount);
+
+  if (req.query.urgent) {
+    query.isUrgent = checkUrgent;
+  }
+
+  if (req.query.request_amount) {
+    query.request_amount = newRequestAmount;
+  }
+
+  await db.Request.update(query, { where: { id: req.query.id } });
+  res.status(200).send({ message: "successfully" });
+};
+
+module.exports = {
+  createNewRequest,
+  getAllRequest,
+  getRequestAndPhone,
+  updatePatchRequest,
+  getRequestById,
+};
